@@ -1,0 +1,36 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Addresses</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Resolved as</th>
+      <th>Generated at</th>
+      <th>Temp</th>
+      <th>Feels Like</th>
+      <th>Precip.</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @addresses.each do |address| %>
+      <tr>
+        <% current_conditions = VisualCrossing::Presenter.on_index(address) %>
+        <td><%= address.resolved_as %></td>
+        <td><%= address.generated_at %></td>
+        <td><%= current_conditions[0] %></td>
+        <td><%= current_conditions[1] %></td>
+        <td><%= current_conditions[2] %></td>
+        <td><%= link_to 'Show', address %></td>
+<!--        <td><%#= link_to 'Edit', edit_address_path(address) %></td>-->
+<!--        <td><%#= link_to 'Destroy', address, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Address', new_address_path %>
