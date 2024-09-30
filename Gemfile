@@ -28,7 +28,6 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
-gem "rest_framework"
 gem "iostreams"
 gem "amazing_print"
 gem "rails_semantic_logger"

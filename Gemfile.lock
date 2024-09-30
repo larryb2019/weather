@@ -169,8 +169,6 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     regexp_parser (2.9.2)
-    rest_framework (0.9.14)
-      rails (>= 4.0)
     rexml (3.3.7)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
@@ -246,7 +244,6 @@ DEPENDENCIES
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.7, >= 6.1.7.8)
   rails_semantic_logger
-  rest_framework
   sass-rails (>= 6)
   selenium-webdriver (>= 4.0.0.rc1)
   spring
