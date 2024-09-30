@@ -76,11 +76,7 @@ module VisualCrossing
     private
 
     def expired?
-      v = Time.current > 1.hour.since(address.generated_at)
-      if v
-        puts "Expired"
-      end
-      true
+      Time.current > 1.hour.since(address.generated_at)
     end
 
     # save the VisualCrossing information

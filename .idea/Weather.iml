@@ -89,7 +89,6 @@
     <orderEntry type="library" scope="PROVIDED" name="rb-fsevent (v0.11.2, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rb-inotify (v0.11.1, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.9.2, RVM: ruby-3.0.0) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rest_framework (v0.9.14, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rexml (v3.3.7, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v2.3.2, RVM: ruby-3.0.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sass-rails (v6.0.0, RVM: ruby-3.0.0) [gem]" level="application" />
@@ -141,7 +140,6 @@
         <option value="model" />
         <option value="rack_profiler:install" />
         <option value="resource" />
-        <option value="rest_framework:controller" />
         <option value="scaffold" />
         <option value="scaffold_controller" />
         <option value="system_test" />
@@ -172,7 +170,6 @@
         <option value="model" />
         <option value="rack_profiler:install" />
         <option value="resource" />
-        <option value="rest_framework:controller" />
         <option value="scaffold" />
         <option value="scaffold_controller" />
         <option value="system_test" />
