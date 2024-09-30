@@ -52,8 +52,10 @@ class AddressesController < ApplicationController
       # call our endpoint and store address info
       @service = VisualCrossing::Request.on_create(model)
       @presenter = @service.presenter
+      @service.address
+    else
+      model
     end
-    model
   end
 
   def on_show

@@ -17,37 +17,53 @@ module VisualCrossing
     end
 
     def initialize(visual_crossing_hash)
-      @weather_data = visual_crossing_hash
+      @weather_data = visual_crossing_hash || {}
+    end
+
+    def valid?
+      @weather_data["bad_request"].nil?
     end
 
     def address
-      @weather_data['resolvedAddress']
+      @weather_data['resolvedAddress'] || "None"
     end
 
     def days
-      @weather_data['days']
+      @weather_data['days'] || []
+    end
+
+    def valid(value)
+      value.nil? ? "n/a" : value
+    end
+
+    def ui_hourly_info
+      return [] if ui_days.blank?
+
+      ui_days.first[:hour_data] || []
     end
 
     def ui_hour_data(day_info)
-      day_info['hours'].map do |hour_info|
+      data = day_info['hours'].map do |hour_info|
         { date: hour_info['datetime'],
           temp: hour_info['temp'],
           precipprob: hour_info['precipprob'],
           conditions: hour_info['conditions'] }
       end
+      ap [:ui_hour_data, data]
+      data
     end
 
     # weather.com
     #  time  temperature cloudy precipitation
     def ui_days
       days.map do |day_info|
-        { 'Date' => day_info['datetime'],
-          'Temp' => { max: day_info['tempmax'],
-                      current: day_info['temp'],
-                      min: day_info['tempmin'] },
-          'Feels Like' => { max: day_info['feelslikemax'],
-                            current: day_info['feelslike'],
-                            min: day_info['feelslikemin'] },
+        { 'Date' => valid(day_info['datetime']),
+          'Temp' => { max: valid(day_info['tempmax']),
+                      current: valid(day_info['temp']),
+                      min: valid(day_info['tempmin']) },
+          'Feels Like' => { max: valid(day_info['feelslikemax']),
+                            current: valid(day_info['feelslike']),
+                            min: valid(day_info['feelslikemin']) },
           hour_data: ui_hour_data(day_info)
         }
       end
@@ -113,7 +129,9 @@ module VisualCrossing
     #     ]
     # ]
     def ui_current_conditions
-      data = visible_current_conditions.map { |key, title| "#{title}: #{current_conditions[key]}" }
+      data = visible_current_conditions.map do  |key, title|
+        "#{title}: #{valid? ? current_conditions[key] : "n/a"}"
+      end
       ap [:ui_current_conditions, data]
       data
     end
