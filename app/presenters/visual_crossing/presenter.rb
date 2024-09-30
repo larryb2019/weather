@@ -28,10 +28,6 @@ module VisualCrossing
       @weather_data['days']
     end
 
-    def ui_weather_title(address)
-      "<strong>#{address.resolved_as}</strong> As of #{ui_in_time_zone(address.generated_at)}"
-    end
-
     def ui_hour_data(day_info)
       day_info['hours'].map do |hour_info|
         { date: hour_info['datetime'],
@@ -105,8 +101,21 @@ module VisualCrossing
       @weather_data['currentConditions']
     end
 
+    # ex:
+    # [
+    #     [0] :ui_current_conditions,
+    #     [1] [
+    #         [0] "Temperature: 60.8",
+    #         [1] "Feels Like: 60.8",
+    #         [2] "Humidity: 77.4",
+    #         [3] "Precipitation: 0.0",
+    #         [4] "Precipitation Probability: 0.0"
+    #     ]
+    # ]
     def ui_current_conditions
-      visible_current_conditions.map { |key, title| "#{title}: #{current_conditions[key]}" }
+      data = visible_current_conditions.map { |key, title| "#{title}: #{current_conditions[key]}" }
+      ap [:ui_current_conditions, data]
+      data
     end
 
     def ui_current_conditions_list
