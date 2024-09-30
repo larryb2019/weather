@@ -1,0 +1,14 @@
+<h3> Hourly Information </h3>
+<% hourly_info = presenter.ui_days.first[:hour_data] %>
+<div class="row">
+  <div class="column">Time</div>
+  <div class="column">Temperature</div>
+  <div class="column">Precipitation percent</div>
+  <div class="column">Conditions</div>
+  <% hourly_info.each do |info| %>
+    <div class="column"><%= info[:date] %></div>
+    <div class="column"><%= info[:temp] %></div>
+    <div class="column"><%= info[:precipprob] %></div>
+    <div class="column"><%= info[:conditions] %></div>
+  <% end %>
+</div>

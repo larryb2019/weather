@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  input: MyString
+  generated_at: 2024-09-29 07:17:47
+  resolved_as: MyString
+  body: MyText
+
+two:
+  input: MyString
+  generated_at: 2024-09-29 07:17:47
+  resolved_as: MyString
+  body: MyText

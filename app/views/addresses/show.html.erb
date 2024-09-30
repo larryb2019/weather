@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>For Address:</strong>
+  <%= @address.input %>
+</p>
+
+<p>
+  <strong>Resolved as:</strong>
+  <%= @address.resolved_as %>
+</p>
+
+<p>
+  <strong>Generated at:</strong>
+  <%= @address.generated_at %>
+</p>
+
+<%= render 'current_conditions', presenter: @presenter %>
+
+<%= render 'hourly_information', presenter: @presenter %>
+
+<%= link_to 'Back', addresses_path %>
+
+<%= render 'for_debug', presenter: @presenter  %>

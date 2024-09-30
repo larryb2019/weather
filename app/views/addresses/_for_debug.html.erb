@@ -1,0 +1,17 @@
+<% if Rails.env.test? %>
+  <% weather_data = presenter.weather_data %>
+  <p> Shown in Development mode only (Response) </p>
+  <p> uri: <%= @address.my_uri %> </p>
+  <% if weather_data.is_a?(Hash) %>
+    <div class="weather-data-keys">
+      <%= ap weather_data.keys, :html => true %>
+    </div>
+    <div class="weather-data-list">
+      <%= ap weather_data, :html => true %>
+    </div>
+  <% else %>
+    <div class="weather-data-bad-request">
+      <%= weather_data %>
+    </div>
+  <% end %>
+<% end %>
