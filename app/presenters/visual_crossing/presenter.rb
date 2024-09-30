@@ -28,6 +28,10 @@ module VisualCrossing
       @weather_data['days']
     end
 
+    def ui_weather_title(address)
+      "<strong>#{address.resolved_as}</strong> As of #{ui_in_time_zone(address.generated_at)}"
+    end
+
     def ui_hour_data(day_info)
       day_info['hours'].map do |hour_info|
         { date: hour_info['datetime'],
@@ -38,7 +42,7 @@ module VisualCrossing
     end
 
     # weather.com
-    #  time  temperature cloudy precipitatio
+    #  time  temperature cloudy precipitation
     def ui_days
       days.map do |day_info|
         { 'Date' => day_info['datetime'],
