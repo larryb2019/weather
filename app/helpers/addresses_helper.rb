@@ -2,7 +2,7 @@ module AddressesHelper
   # https://apidock.com/ruby/DateTime/strftime \
   def ui_in_time_zone(time_utc)
     "#{time_utc.in_time_zone('Eastern Time (US & Canada)')
-               .strftime("%l:%M %P")} EDT"
+               .strftime("%l:%M %P %Z")}"
   end
 
   def address_title
