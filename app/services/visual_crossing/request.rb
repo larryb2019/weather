@@ -2,7 +2,8 @@ module VisualCrossing
   class Request
     include SemanticLogger::Loggable
 
-    attr_reader :address, :body_hash, :body_json, :date_begin_on, :date_end_on, :params
+    attr_accessor :address
+    attr_reader :body_hash, :body_json, :date_begin_on, :date_end_on, :params
 
     delegate :payload_gsub, :rest_uri_base, to: :class
 
@@ -55,13 +56,7 @@ module VisualCrossing
     #   to be used in tests.
     def on_create
       call_service
-      VisualCrossing::TestFixture.write_or_not(address, body_json)
-      @body_hash = JSON.parse(body_json)
-      address_save
-    rescue JSON::ParserError
-      logger.error("Could not parse response ask Product Owner how to handle this",
-                   metric: "Request/Rescue")
-      body_json
+      address_save!
     end
 
     def on_show
@@ -69,7 +64,7 @@ module VisualCrossing
 
       # get fresh data from service
       logger.measure_info("Reset Service data", metric: "VisualCrossing/Request/Reset") do
-       on_create
+        on_create
       end
     end
 
@@ -82,12 +77,11 @@ module VisualCrossing
     # save the VisualCrossing information
     #   into the database, since data is valid
     #   for at least one hour
-    def address_save
+    def address_save!
       address.body = body_json
       address.resolved_as = presenter.address
       address.generated_at = Time.current
       address.my_uri = uri
-      address.save!
     end
 
     # the Form input String used as location
@@ -118,13 +112,31 @@ module VisualCrossing
     end
 
     # Replace this with our favorite HTTP Rails gem
-    def call_service
+    def send_service_request
       logger.measure_info("calling VisualCrossing",
                           metric: "VisualCrossing/Request",
                           criteria: { uri: uri }) do
-        puts "uri:#{uri}"
         @body_json = `curl #{uri}`
       end
+    end
+
+    def call_service
+      send_service_request
+      VisualCrossing::TestFixture.write_or_not(address, body_json)
+      @body_hash = JSON.parse(body_json)
+    rescue JSON::ParserError => e
+      call_service_rescue(e)
+    end
+
+    def call_service_rescue(exception)
+      logger.error("Could not parse response ask Product Owner how to handle this",
+                   metric: "Request/Rescue",
+                   rescued: {
+                     message: exception.message,
+                     backtrace: exception.backtrace
+                   })
+      address.errors.add(:base, exception.message)
+      @body_json = {bad_request: body_json}.to_json
     end
   end
 end
