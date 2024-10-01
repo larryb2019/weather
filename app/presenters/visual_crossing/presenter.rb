@@ -20,10 +20,6 @@ module VisualCrossing
       @weather_data = visual_crossing_hash || {}
     end
 
-    def valid?
-      @weather_data["bad_request"].nil?
-    end
-
     def address
       @weather_data['resolvedAddress'] || "None"
     end
@@ -32,6 +28,14 @@ module VisualCrossing
       @weather_data['days'] || []
     end
 
+    # VisualCrossing::Request sets "bad_request"
+    #   when http or json.parse is not successful
+    def valid?
+      @weather_data["bad_request"].nil?
+    end
+
+    # TODO: Program Manager what to display
+    #   when we have a bad_request returned from the Service?
     def valid(value)
       value.nil? ? "n/a" : value
     end
@@ -40,6 +44,12 @@ module VisualCrossing
       return [] if ui_days.blank?
 
       ui_days.first[:hour_data] || []
+    end
+
+    def ui_high_low_info
+      return {} if ui_days.blank?
+
+      ui_days.first || {}
     end
 
     def ui_hour_data(day_info)
@@ -114,9 +124,12 @@ module VisualCrossing
     end
 
     def current_conditions
-      @weather_data['currentConditions']
+      @current_conditions ||= @weather_data['currentConditions']
     end
 
+    # callers:
+    #  app/views/addresses/_current_conditions.html.erb
+    #  app/views/addresses/show.html.erb
     # ex:
     # [
     #     [0] :ui_current_conditions,
@@ -129,13 +142,13 @@ module VisualCrossing
     #     ]
     # ]
     def ui_current_conditions
-      data = visible_current_conditions.map do  |key, title|
+      visible_current_conditions.map do  |key, title|
         "#{title}: #{valid? ? current_conditions[key] : "n/a"}"
       end
-      ap [:ui_current_conditions, data]
-      data
     end
 
+    # callers:
+    #   app/views/addresses/index.html.erb
     def ui_current_conditions_list
       @ui_current_conditions_list ||= ui_current_conditions[0..2].map{|info| info.split(":").last.strip}
     end
