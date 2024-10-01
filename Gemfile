@@ -31,6 +31,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem "iostreams"
 gem "amazing_print"
 gem "rails_semantic_logger"
+gem 'net-http-persistent', '~> 4.0', '>= 4.0.4'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

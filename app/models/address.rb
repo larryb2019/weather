@@ -7,4 +7,8 @@ class Address < ApplicationRecord
   rescue JSON::ParserError
     @body_hash = {}
   end
+
+  def on_create(params)
+
+  end
 end
