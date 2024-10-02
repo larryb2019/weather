@@ -1,5 +1,5 @@
 class AddressesController < ApplicationController
-  before_action :set_address, only: %i[ show ]
+  before_action :set_address, only: %i[ show edit update destroy ]
 
   # GET /addresses or /addresses.json
   def index
@@ -29,6 +29,23 @@ class AddressesController < ApplicationController
         format.json { render json: @address.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def edit
+  end
+
+  def update
+    if @address.update(address_params)
+      redirect_to @address
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @address.destroy
+
+    redirect_to root_path
   end
 
   private

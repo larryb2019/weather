@@ -22,10 +22,10 @@
         <td><%= ui_in_time_zone(address.generated_at) %></td>
         <td><%= current_conditions[0] %></td>
         <td><%= current_conditions[1] %></td>
-        <td><%= current_conditions[2] %></td>
+        <td><%= current_conditions[2] %>%</td>
         <td><%= link_to 'Show', address %></td>
-<!--        <td><%#= link_to 'Edit', edit_address_path(address) %></td>-->
-<!--        <td><%#= link_to 'Destroy', address, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
+        <td><%= link_to 'Edit', edit_address_path(address) %></td>
+        <td><%= button_to 'Destroy', address, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
