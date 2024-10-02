@@ -1,6 +1,6 @@
 <% high_low_info = presenter.ui_high_low_info %>
 <% if high_low_info.present? %>
-  <% temp = high_low_info["Temp"] %>
+  <% temp = high_low_info[:temp] %>
   <h3>Today's High Low Information </h3>
   <div class="row">
     <div class="column">&nbsp;</div>
@@ -15,7 +15,7 @@
     <div class="column"><%= temp[:min] %></div>
   </div>
   <div class="row">
-    <% feel = high_low_info["Feels Like"] %>
+    <% feel = high_low_info[:feels_like] %>
     <div class="column">Feels Like</div>
     <div class="column"><%= feel[:current] %></div>
     <div class="column"><%= feel[:max] %></div>

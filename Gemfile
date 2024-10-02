@@ -32,6 +32,8 @@ gem "iostreams"
 gem "amazing_print"
 gem "rails_semantic_logger"
 gem 'net-http-persistent', '~> 4.0', '>= 4.0.4'
+gem 'rubocop'
+gem 'rubocop-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

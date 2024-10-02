@@ -1,12 +1,18 @@
+# frozen_string_literal: true
+
 module VisualCrossing
+  # Ability to store the development responses
+  #   into test fixures for our tests.
+  # NOTE: Only writes in Rails.env.development?
   class TestFixture
     include SemanticLogger::Loggable
 
     attr_reader :my_location, :json_data
+
     delegate :path_base, to: :class
 
     def self.path_base
-      "test/fixtures/visual_crossing"
+      'test/fixtures/visual_crossing'
     end
 
     def self.write_or_not(address, json_data)
@@ -26,9 +32,9 @@ module VisualCrossing
       return unless Rails.env.development?
       return if path_location.exist?
 
-      logger.measure_info("writing test fixture",
-                          metric: "TestFixture/Write",
-                          criteria: {path_location: path_location.to_s}) do
+      logger.measure_info('writing test fixture',
+                          metric: 'TestFixture/Write',
+                          criteria: { path_location: path_location.to_s }) do
         path_location.writer { |io| io << json_data }
       end
     end
@@ -36,10 +42,13 @@ module VisualCrossing
     private
 
     def path_location
-      parts = my_location.split(",")
-      city = parts.first.downcase.gsub(" ", "_").strip
-      state = parts.last.downcase.strip
-      IOStreams.path(path_base, "#{city}-#{state}.json")
+      if @path_location.nil?
+        parts = my_location.split(',')
+        city = parts.first.downcase.gsub(' ', '_').strip
+        state = parts.last.downcase.strip
+        @path_location = IOStreams.path(path_base, "#{city}-#{state}.json")
+      end
+      @path_location
     end
   end
 end

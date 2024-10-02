@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'net/http/persistent'
 
 module VisualCrossing
+  # PersistentHttp Wrapper for our Weather Service request
   class Http
     delegate :payload_gsub, :rest_uri_base, :http_persist, to: :class
 
@@ -9,11 +12,11 @@ module VisualCrossing
     end
 
     def self.api_key
-      @api_key ||= "5M3PTGAJSEJM247DA4NZ4QADX"
+      @api_key ||= '5M3PTGAJSEJM247DA4NZ4QADX'
     end
 
     def self.payload_gsub
-      @payload_sub ||= "PAYLOAD_GSUB"
+      @payload_gsub ||= 'PAYLOAD_GSUB'
     end
 
     def self.rest_uri_base
@@ -52,11 +55,12 @@ module VisualCrossing
     # TODO: sign up for access to get zip code
     def uri_zip_code
       l = CGI.unescape(location)
-      city = l.split(",").first.strip
-      state = l.split(",").last.strip
+      city = l.split(',').first.strip
+      state = l.split(',').last.strip
       "https://api.usps.com/addresses/v3/address/city/#{city}/state/#{state}"
     end
 
+    # TODO: sign up for USPS service
     def zip_code
       response = http_persist.request(uri_zip_code)
       response.body
