@@ -1,5 +1,8 @@
-class Address < ApplicationRecord
+# frozen_string_literal: true
 
+# Address model for storing Json data from weather service
+#   and generated_at information
+class Address < ApplicationRecord
   delegate :cache_expires_in, to: :class
 
   validates :input, presence: true
@@ -11,7 +14,7 @@ class Address < ApplicationRecord
   end
 
   def body_hash
-    @body_hash ||= JSON.parse(body || "")
+    @body_hash ||= JSON.parse(body || '')
   rescue JSON::ParserError
     @body_hash = {}
   end

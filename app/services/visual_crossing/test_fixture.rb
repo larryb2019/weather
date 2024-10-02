@@ -2,7 +2,7 @@
 
 module VisualCrossing
   # Ability to store the development responses
-  #   into test fixures for our tests.
+  #   into test fixtures for our tests.
   # NOTE: Only writes in Rails.env.development?
   class TestFixture
     include SemanticLogger::Loggable
