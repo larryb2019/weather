@@ -40,7 +40,7 @@ class AddressesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def address_params
-    params.require(:address).permit(:input, :generated_at, :resolved_as, :body)
+    params.require(:address).permit(:input)
   end
 
   # Create a new address resource
@@ -48,18 +48,14 @@ class AddressesController < ApplicationController
   #   and present the results
   def on_create
     model = Address.new(address_params)
-    if model.valid?
-      # call our endpoint and store address info
-      @service = VisualCrossing::Request.on_create(model)
-      @presenter = @service.presenter
-      @service.address
-    else
-      model
-    end
+    @presenter = VisualCrossing::Presenter.on_create(model) if model.valid?
+    model
   end
 
+  # NOTE: the current_weather_data
+  #   will check if the cache has expired and
+  #   reload the VisualCrossing weather data
   def on_show
-    @service = VisualCrossing::Request.on_show(@address)
-    @presenter = @service.presenter
+    @presenter = VisualCrossing::Presenter.new(@address.current_weather_data)
   end
 end

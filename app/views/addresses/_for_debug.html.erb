@@ -1,3 +1,7 @@
+<div class="weather-data-list">
+  <%= ap @address.current_weather_data, :html => true %>
+</div>
+
 <% if Rails.env.test? %>
   <% weather_data = presenter.weather_data %>
   <p> Shown in Development mode only (Response) </p>
