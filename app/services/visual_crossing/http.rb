@@ -49,6 +49,19 @@ module VisualCrossing
       response.body
     end
 
+    # TODO: sign up for access to get zip code
+    def uri_zip_code
+      l = CGI.unescape(location)
+      city = l.split(",").first.strip
+      state = l.split(",").last.strip
+      "https://api.usps.com/addresses/v3/address/city/#{city}/state/#{state}"
+    end
+
+    def zip_code
+      response = http_persist.request(uri_zip_code)
+      response.body
+    end
+
     private
 
     def payload

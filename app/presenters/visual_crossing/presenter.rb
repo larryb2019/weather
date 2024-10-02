@@ -12,8 +12,20 @@ module VisualCrossing
     # callers:
     #   AddressesController#index
     #   app/views/addresses/index.html.erb
+    # NOTE: Using body_hash so the cache does not
+    #   refresh when showing all Addresses
     def self.on_index(address)
       new(address.body_hash).ui_current_conditions_list
+    end
+
+    # callers:
+    #   AddressesController#create
+    #   app/views/addresses/show.html.erb
+    def self.on_create(address)
+      body_hash = address.current_weather_data
+      presenter = new(body_hash)
+      address.save
+      presenter
     end
 
     def initialize(visual_crossing_hash)
@@ -53,14 +65,12 @@ module VisualCrossing
     end
 
     def ui_hour_data(day_info)
-      data = day_info['hours'].map do |hour_info|
+      day_info['hours'].map do |hour_info|
         { date: hour_info['datetime'],
           temp: hour_info['temp'],
           precipprob: hour_info['precipprob'],
           conditions: hour_info['conditions'] }
       end
-      ap [:ui_hour_data, data]
-      data
     end
 
     # weather.com

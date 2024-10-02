@@ -1,8 +1,12 @@
 <p id="notice"><%= notice %></p>
 
 <%= link_to 'Back', addresses_path %>
+<p> is_refresh:<%= @address.is_refresh? %></p>
+<p> generated_at:<%= ui_in_time_zone(@address.generated_at) %></p>
+<p>   updated_at:<%= ui_in_time_zone(@address.updated_at) %></p>
 
 <p><%= address_title %></p>
+<p><%= @presenter.weather_data["description"] %></p>
 
 <%= render 'current_conditions', presenter: @presenter %>
 
