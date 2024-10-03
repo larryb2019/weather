@@ -31,9 +31,38 @@
 
 en:
   hello: "Hello world"
+  views:
+    addresses:
+      index:
+        col_address: Address
+        col_as_of: As Of
+        col_temp: Temp
+        col_feelslike: Feels Like
+        col_precipprob: Precip Probability
+        temp: "%.1f"
+        feelslike: "%.1f"
+        precipprob: "%.0f"
+      high_low_conditions:
+        title: Today's High Low Information
+        col_label_html: "&nbsp;"
+        col_current: Current
+        col_high: High
+        col_low: Low
+        row_temperature: Temperature
+        row_feelslike: Feels Like
+      hourly_information:
+        col_time: Time
+        col_temp: Temperature
+        col_precipprob: Precip Probablity
+        col_conditions: Conditions
   activerecord:
     models:
       address: Address
     attributes:
       address:
         input: Enter Address for Weather Data
+        temp: Temperature %.1f
+        feelslike: Feels Like %.1f
+        humidity: Humidity %.1f {%}
+        precip: Precipition %.1f
+        precipprob: Precipitation Probability %.0f {%}

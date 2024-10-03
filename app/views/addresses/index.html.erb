@@ -1,15 +1,15 @@
 <p id="notice"><%= notice %></p>
-
+<% scope = [:views, :addresses, :index] %>
 <h1>Current Weather At</h1>
 
 <table>
   <thead>
     <tr>
-      <th>Address</th>
-      <th>As of</th>
-      <th>Temp</th>
-      <th>Feels Like</th>
-      <th>Precip.</th>
+      <th><%= t("col_address", scope: scope) %></th>
+      <th><%= t("col_as_of", scope: scope) %></th>
+      <th><%= t("col_temp", scope: scope) %></th>
+      <th><%= t("col_feelslike", scope: scope) %></th>
+      <th><%= t("col_precipprob", scope: scope) %></th>
       <th colspan="3"></th>
     </tr>
   </thead>

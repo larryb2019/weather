@@ -3,19 +3,29 @@
 # Address model for storing Json data from weather service
 #   and generated_at information
 class Address < ApplicationRecord
-  delegate :cache_expires_in, to: :class
+  delegate :cache_expires_in, :body_empty, to: :class
 
   validates :input, presence: true
   validates_with JsonBodyValidator, on: :create
+
+  def self.body_empty
+    { 'empty' => 'Not Loaded' }.to_json
+  end
 
   # number of minutes to keep current_weather_data cache
   def self.cache_expires_in
     @cache_expires_in ||= 30.minutes
   end
 
+  # callers:
+  #   VisualCrossing::Presenter.on_index
+  # get the body_hash without updating the cache
   def body_hash
-    @body_hash ||= JSON.parse(body || '')
+    @body_hash ||= JSON.parse(body || body_empty)
   rescue JSON::ParserError
+    logger.error("Rescue ParserError for address.id:#{id}",
+                 metric: 'Address/Rescue',
+                 criteria: inspect)
     @body_hash = {}
   end
 
