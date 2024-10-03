@@ -34,6 +34,7 @@ en:
   views:
     addresses:
       index:
+        title: Current Weather At
         col_address: Address
         col_as_of: As Of
         col_temp: Temp
@@ -42,6 +43,8 @@ en:
         temp: "%.1f"
         feelslike: "%.1f"
         precipprob: "%.0f"
+      current_conditions:
+        title: Current Conditions
       high_low_conditions:
         title: Today's High Low Information
         col_label_html: "&nbsp;"
@@ -51,6 +54,7 @@ en:
         row_temperature: Temperature
         row_feelslike: Feels Like
       hourly_information:
+        title: Hourly Information
         col_time: Time
         col_temp: Temperature
         col_precipprob: Precip Probablity
