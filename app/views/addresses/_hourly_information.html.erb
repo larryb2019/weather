@@ -1,11 +1,12 @@
 <% hourly_info = presenter.ui_hourly_info %>
+<% scope = [:views, :addresses, :hourly_information] %>
 <% if hourly_info.present? %>
   <h3> Hourly Information </h3>
   <div class="row">
-    <div class="column">Time</div>
-    <div class="column">Temperature</div>
-    <div class="column">Precipitation percent</div>
-    <div class="column">Conditions</div>
+    <div class="column"><%= t("col_time", scope: scope) %></div>
+    <div class="column"><%= t("col_temp", scope: scope) %></div>
+    <div class="column"><%= t("col_precipprob", scope: scope) %></div>
+    <div class="column"><%= t("col_conditions", scope: scope) %></div>
     <% hourly_info.each do |info| %>
       <div class="column"><%= info[:date] %></div>
       <div class="column"><%= info[:temp] %></div>

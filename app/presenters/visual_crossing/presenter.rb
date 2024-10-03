@@ -11,6 +11,30 @@ module VisualCrossing
   class Presenter
     attr_reader :weather_data
 
+    delegate :scope_view, :visible_current_conditions, :visible_current_conditions_list, to: :class
+
+    def self.scope_view(view = :index)
+      [:views, :addresses, view]
+    end
+
+    # Show page current conditions
+    # feelslike – what the temperature feels like accounting for heat index or wind chill.
+    #             Daily values are average values (mean) for the day.
+    # feelslikemax (day only) – maximum feels like temperature at the location.
+    # feelslikemin (day only) – minimum feels like temperature at the location.
+    # humidity – relative humidity in %
+    # precip – the amount of liquid precipitation that fell or is predicted to fall in the period.
+    #          This includes the liquid-equivalent amount of any frozen precipitation such as snow or ice.
+    # precipprob (forecast only) – the likelihood of measurable precipitation ranging from 0% to 100%
+    def self.visible_current_conditions
+      @visible_current_conditions ||= %w[temp feelslike humidity precip precipprob]
+    end
+
+    # Index page current conditions
+    def self.visible_current_conditions_list
+      @visible_current_conditions_list ||= %w[temp feelslike precipprob]
+    end
+
     # callers:
     #   AddressesController#index
     #   app/views/addresses/index.html.erb
@@ -67,9 +91,7 @@ module VisualCrossing
     #     ]
     # ]
     def ui_current_conditions
-      @ui_current_conditions ||= visible_current_conditions.map do |key, title|
-        "#{title}: #{valid? ? current_conditions[key] : 'n/a'}"
-      end
+      @ui_current_conditions ||= format_view_attrs(visible_current_conditions)
     end
 
     # callers:
@@ -82,10 +104,36 @@ module VisualCrossing
     #         [2] "52.7"
     #     ]
     def ui_current_conditions_list
-      @ui_current_conditions_list ||= ui_current_conditions[0..2].map { |info| info.split(':').last.strip }
+      @ui_current_conditions_list ||= format_view_attrs(visible_current_conditions_list,
+                                                        scope: scope_view(:index))
     end
 
     private
+
+    def in_degrees(element)
+      "#{element}&deg;".html_safe
+    end
+
+    def with_degree(element, attr)
+      if %w[temp feelslike].include?(attr)
+        in_degrees(element)
+      else
+        element
+      end
+    end
+
+    def format_view_attrs(list, scope: nil)
+      list.map do |attr|
+        if valid?
+          translate = scope ? I18n.t(attr, scope: scope) : Address.human_attribute_name(attr)
+          value = current_conditions[attr] || 0.0
+          element = translate.gsub('{%}', '%%') % value
+          with_degree(element, attr)
+        else
+          'n/a'
+        end
+      end
+    end
 
     # VisualCrossing::Request sets "bad_request"
     #   when http or json.parse is not successful
@@ -121,71 +169,27 @@ module VisualCrossing
 
     def ui_high_low_temp(day_info)
       {
-        max: valid(day_info['tempmax']),
-        current: valid(day_info['temp']),
-        min: valid(day_info['tempmin'])
+        max: valid(in_degrees(day_info['tempmax'])),
+        current: valid(in_degrees(day_info['temp'])),
+        min: valid(in_degrees(day_info['tempmin']))
       }
     end
 
     def ui_high_low_feels_like(day_info)
       {
-        max: valid(day_info['feelslikemax']),
-        current: valid(day_info['feelslike']),
-        min: valid(day_info['feelslikemin'])
+        max: valid(in_degrees(day_info['feelslikemax'])),
+        current: valid(in_degrees(day_info['feelslike'])),
+        min: valid(in_degrees(day_info['feelslikemin']))
       }
     end
 
     def ui_hour_data(day_info)
       day_info['hours'].map do |hour_info|
         { date: hour_info['datetime'],
-          temp: hour_info['temp'],
+          temp: in_degrees(hour_info['temp']),
           precipprob: hour_info['precipprob'],
           conditions: hour_info['conditions'] }
       end
-    end
-
-    # Possible attribute data supplied
-    #     "currentConditions": {
-    #       "datetime": "09:45:00",
-    #       "datetimeEpoch": 1727531100,
-    #       "temp": 82.4,
-    #       "feelslike": 92.9,
-    #       "humidity": 90.1,
-    #       "dew": 79.2,
-    #       "precip": 0.0,
-    #       "precipprob": 0.0,
-    #       "snow": 0.0,
-    #       "snowdepth": 0.0,
-    #       "preciptype": null,
-    #       "windgust": 4.8,
-    #       "windspeed": 0.9,
-    #       "winddir": 68.0,
-    #       "pressure": 1013.0,
-    #       "visibility": 9.9,
-    #       "cloudcover": 88.0,
-    #       "solarradiation": 249.0,
-    #       "solarenergy": 0.9,
-    #       "uvindex": 2.0,
-    #       "conditions": "Partially cloudy",
-    #       "icon": "partly-cloudy-day",
-    #       "stations": [
-    #         "KBKV",
-    #         "E8085",
-    #         "F8529"
-    #       ],
-    #       "source": "obs",
-    #       "sunrise": "07:22:13",
-    #       "sunriseEpoch": 1727522533,
-    #       "sunset": "19:19:20",
-    #       "sunsetEpoch": 1727565560,
-    #       "moonphase": 0.86
-    # #   (Bonus points - Retrieve high/low and/or extended forecast)
-    def visible_current_conditions
-      { 'temp' => 'Temperature',
-        'feelslike' => 'Feels Like',
-        'humidity' => 'Humidity',
-        'precip' => 'Precipitation',
-        'precipprob' => 'Precipitation Probability' }
     end
 
     def current_conditions
