@@ -19,7 +19,7 @@
       <tr>
         <% current_conditions = VisualCrossing::Presenter.on_index(address) %>
         <td><%= address.resolved_as %></td>
-        <td><%= ui_in_time_zone(address.generated_at) %></td>
+        <td><%= last_updated_at(address) %></td>
         <td><%= current_conditions[0] %></td>
         <td><%= current_conditions[1] %></td>
         <td><%= current_conditions[2] %>%</td>

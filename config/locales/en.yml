@@ -44,17 +44,17 @@ en:
         feelslike: "%.1f"
         precipprob: "%.0f"
       current_conditions:
-        title: Current Conditions
+        title_html: <strong>Current Conditions</strong> Last Reported As of %{time}
       high_low_conditions:
-        title: Today's High Low Information
+        title_html: <strong>Today's High Low Information</strong>
         col_label_html: "&nbsp;"
-        col_current: Current
+        col_current: Mean for the Day
         col_high: High
         col_low: Low
         row_temperature: Temperature
         row_feelslike: Feels Like
       hourly_information:
-        title: Hourly Information
+        title_html: <strong>Hourly Information</strong>
         col_time: Time
         col_temp: Temperature
         col_precipprob: Precip Probablity
@@ -65,6 +65,7 @@ en:
     attributes:
       address:
         input: Enter Address for Weather Data
+        datetimeEpoch: "As of"
         temp: Temperature %.1f
         feelslike: Feels Like %.1f
         humidity: Humidity %.1f {%}

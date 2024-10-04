@@ -6,6 +6,10 @@
     <div class="weather-data-keys">
       <%= ap weather_data.keys, :html => true %>
     </div>
+    <div class="weather-data-keys">
+      <%= ap weather_data["currentConditions"], :html => true %>
+    </div>
+
     <div class="weather-data-list">
       <%= ap weather_data, :html => true %>
     </div>

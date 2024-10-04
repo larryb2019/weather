@@ -1,16 +1,16 @@
 <% hourly_info = presenter.ui_hourly_info %>
 <% scope = [:views, :addresses, :hourly_information] %>
 <% if hourly_info.present? %>
-  <h3> <%= t("title", scope: scope) %> </h3>
+  <p> <%= t("title_html", scope: scope) %> </p>
   <div class="row">
     <div class="column"><%= t("col_time", scope: scope) %></div>
     <div class="column"><%= t("col_temp", scope: scope) %></div>
     <div class="column"><%= t("col_precipprob", scope: scope) %></div>
     <div class="column"><%= t("col_conditions", scope: scope) %></div>
     <% hourly_info.each do |info| %>
-      <div class="column"><%= info[:date] %></div>
+      <div class="column"><%= ui_in_zone_hour_short(info[:date]) %></div>
       <div class="column"><%= info[:temp] %></div>
-      <div class="column"><%= info[:precipprob] %></div>
+      <div class="column"><%= "%.0f %%" % info[:precipprob] %></div>
       <div class="column"><%= info[:conditions] %></div>
     <% end %>
   </div>

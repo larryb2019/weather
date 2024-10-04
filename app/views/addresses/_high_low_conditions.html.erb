@@ -2,7 +2,7 @@
 <% scope = [:views, :addresses, :high_low_conditions] %>
 <% if high_low_info.present? %>
   <% temp = high_low_info[:temp] %>
-  <h3><%= t("title", scope: scope) %></h3>
+  <p><%= t("title_html", scope: scope) %></p>
   <div class="row">
     <div class="column">&nbsp;</div>
     <div class="column"><%= t("col_current", scope: scope) %></div>

@@ -26,7 +26,7 @@ module VisualCrossing
     # precip – the amount of liquid precipitation that fell or is predicted to fall in the period.
     #          This includes the liquid-equivalent amount of any frozen precipitation such as snow or ice.
     # precipprob (forecast only) – the likelihood of measurable precipitation ranging from 0% to 100%
-    def self.visible_current_conditions
+    def self.xvisible_current_conditions
       @visible_current_conditions ||= %w[temp feelslike humidity precip precipprob]
     end
 
@@ -90,7 +90,7 @@ module VisualCrossing
     #         [4] "Precipitation Probability: 0.0"
     #     ]
     # ]
-    def ui_current_conditions
+    def xui_current_conditions
       @ui_current_conditions ||= format_view_attrs(visible_current_conditions)
     end
 
@@ -106,6 +106,14 @@ module VisualCrossing
     def ui_current_conditions_list
       @ui_current_conditions_list ||= format_view_attrs(visible_current_conditions_list,
                                                         scope: scope_view(:index))
+    end
+
+    def time_zone
+      @weather_data['timezone'] || 'Eastern Time (US & Canada)'
+    end
+
+    def current_conditions
+      @current_conditions ||= @weather_data['currentConditions']
     end
 
     private
@@ -152,6 +160,9 @@ module VisualCrossing
     end
 
     # VisualCrossing daily information array
+    # datetime – ISO 8601 formatted date, time or datetime value indicating
+    #   the date and time of the weather data in the local time zone of the
+    #   requested location.
     def ui_days
       days.map do |day_info|
         {
@@ -190,10 +201,6 @@ module VisualCrossing
           precipprob: hour_info['precipprob'],
           conditions: hour_info['conditions'] }
       end
-    end
-
-    def current_conditions
-      @current_conditions ||= @weather_data['currentConditions']
     end
   end
 end

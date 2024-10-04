@@ -1,11 +1,25 @@
 <p id="notice"><%= notice %></p>
+<% @zone = @presenter.time_zone %>
 
 <%= link_to 'Back', addresses_path %>
-<p> cache refreshed:<%= @address.cache_refreshed? %></p>
-<!--<p> generated_at:<%#= ui_in_time_zone(@address.generated_at) %></p>-->
-<!--<p>   updated_at:<%#= ui_in_time_zone(@address.updated_at) %></p>-->
+<% dump = false %>
+<% if dump %>
+  <ul>
+    <li>cache refreshed:<%= @address.cache_refreshed? %> generated as
+      of <%= ui_in_time_zone_eastern(@address.generated_at) %></li>
+    <% datetime = @presenter.weather_data["currentConditions"]["datetime"] %>
+    <% epoch = @presenter.weather_data["currentConditions"]["datetimeEpoch"] %>
+    <li><%= "Zone:#{@zone}, datetime:#{datetime}, epoch:#{epoch}" %></li>
+    <li> raw_datetime: <%= @presenter.weather_data["currentConditions"]["datetime"] %></li>
+    <li> raw_epoch: <%= @presenter.weather_data["currentConditions"]["datetimeEpoch"] %></li>
 
-<p><%= address_title %></p>
+    <li> datetimeEpoch: <%= ui_in_zone_epoch(epoch) %></li>
+    <li> datetime: <%= ui_in_zone_hour(datetime) %></li>
+    <li> current: <%= Time.current.in_time_zone(@zone).strftime("%l:%M %P %Z") %></li>
+  </ul>
+<% end %>
+
+<p><%= title_address %></p>
 <p><%= @presenter.weather_data["description"] %></p>
 
 <%= render 'current_conditions', presenter: @presenter %>
@@ -14,4 +28,4 @@
 
 <%= render 'hourly_information', presenter: @presenter %>
 
-<%= render 'for_debug', presenter: @presenter  %>
+<%= render 'for_debug', presenter: @presenter %>

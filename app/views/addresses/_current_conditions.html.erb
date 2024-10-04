@@ -1,6 +1,15 @@
-<h3><%= t("title", scope: [:views, :address, :current_conditions]) %></h3>
+<% @current_conditions = presenter.current_conditions %>
+<% scope = [:views, :addresses, :current_conditions] %>
+<p>
+  <%= t("title_html", time: ui_in_zone_epoch(@current_conditions["datetimeEpoch"]), scope: scope) %>
+</p>
 <ul>
-  <% presenter.ui_current_conditions.each do |data| %>
-    <li><%= data %></li>
-  <% end %>
+  <li><%= as_temp("temp") %></li>
+  <li><%= as_temp("feelslike") %></li>
+  <li><%= with_format("humidity") %></li>
+  <li><%= with_format("precip") %></li>
+  <li><%= with_format("precipprob") %></li>
+  <%# presenter.ui_current_conditions.each do |data| %>
+<!--    <li><%#= data %></li>-->
+  <%# end %>
 </ul>

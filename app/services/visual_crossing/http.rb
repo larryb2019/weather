@@ -12,7 +12,8 @@ module VisualCrossing
     end
 
     def self.api_key
-      @api_key ||= '5M3PTGAJSEJM247DA4NZ4QADX'
+      @api_key ||= ENV['VC_API_KEY']
+      #@api_key ||= '5M3PTGAJSEJM247DA4NZ4QADX'
     end
 
     def self.payload_gsub
