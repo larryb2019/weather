@@ -21,16 +21,33 @@ module AddressesHelper
     "#{label} #{ui_in_zone_epoch(@current_conditions[key])}"
   end
 
+
+  def format_degrees(value)
+    "%.1f" % value
+  end
+
+  def as_degrees(value)
+    t("degrees_html", temp: format_degrees(value))
+  end
+
+  def as_temp(key)
+    value = @current_conditions[key]
+    t("#{key}_html", temp: format_degrees(value), scope: [:activerecord, :attributes, :address])
+  end
+
+  # key:
+  #   temp_html, feels_like_html
+  def as_html(key, value)
+    t("#{key}_html", value: value, scope: [:activerecord, :attributes, :address])
+  end
+
   def address_locale_format(key)
     Address.human_attribute_name(key).gsub('{%}', '%%')
   end
 
-  def as_temp(key)
-    "#{with_format(key)}&deg;".html_safe
-  end
-
-  def with_format(key)
-    value = @current_conditions[key] || 0.0
+  # key:
+  #   humidity, precip_amount, precip_probability
+  def with_format(key, value)
     address_locale_format(key) % value
   end
 

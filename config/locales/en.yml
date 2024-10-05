@@ -31,6 +31,7 @@
 
 en:
   hello: "Hello world"
+  degrees_html: "%{temp}&deg;"
   views:
     addresses:
       index:
@@ -47,12 +48,12 @@ en:
         title_html: <strong>Current Conditions</strong> Last Reported As of %{time}
       high_low_conditions:
         title_html: <strong>Today's High Low Information</strong>
-        col_label_html: "&nbsp;"
-        col_current: Mean for the Day
+        col_type_html: "&nbsp;"
+        col_mean: Mean for the Day
         col_high: High
         col_low: Low
-        row_temperature: Temperature
-        row_feelslike: Feels Like
+        temp: Temperature
+        feels_like: Feels Like
       hourly_information:
         title_html: <strong>Hourly Information</strong>
         col_time: Time
@@ -66,8 +67,8 @@ en:
       address:
         input: Enter Address for Weather Data
         datetimeEpoch: "As of"
-        temp: Temperature %.1f
-        feelslike: Feels Like %.1f
-        humidity: Humidity %.1f {%}
-        precip: Precipition %.1f
-        precipprob: Precipitation Probability %.0f {%}
+        temp_html: Temperature %{value}&deg;
+        feels_like_html: Feels Like %{value}&deg;
+        humidity: Humidity %.2f {%}
+        precip_amount: Precipition %.1f inches
+        precip_probability: Precipitation Probability %.0f {%}

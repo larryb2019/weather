@@ -8,6 +8,10 @@ Retrieve forecast data for the given address. This should include, at minimum, t
 Display the requested forecast details to the user
 Cache the forecast details for 30 minutes for all subsequent requests by zip codes. Display indicator if result is pulled from cache.
 
+### Visual Crossing Weather Data
+https://www.visualcrossing.com/resources/documentation/weather-api/timeline-weather-api/
+https://www.visualcrossing.com/resources/documentation/weather-data/weather-data-documentation/
+
 ### Supporting gems
 * https://iostreams.rocketjob.io/
 "iostreams"

@@ -1,25 +1,19 @@
-<% high_low_info = presenter.ui_high_low_info %>
+<% high_low_rows = presenter.ui_high_low_conditions %>
 <% scope = [:views, :addresses, :high_low_conditions] %>
-<% if high_low_info.present? %>
-  <% temp = high_low_info[:temp] %>
+<% if high_low_rows.present? %>
   <p><%= t("title_html", scope: scope) %></p>
   <div class="row">
-    <div class="column">&nbsp;</div>
-    <div class="column"><%= t("col_current", scope: scope) %></div>
+    <div class="column"><%= t("col_type_html", scope: scope) %>&nbsp;</div>
+    <div class="column"><%= t("col_mean", scope: scope) %></div>
     <div class="column"><%= t("col_high", scope: scope) %></div>
     <div class="column"><%= t("col_low", scope: scope) %></div>
   </div>
-  <div class="row">
-    <div class="column"><%= t("row_temperature", scope: scope) %></div>
-    <div class="column"><%= temp[:current] %></div>
-    <div class="column"><%= temp[:max] %></div>
-    <div class="column"><%= temp[:min] %></div>
-  </div>
-  <div class="row">
-    <% feel = high_low_info[:feels_like] %>
-    <div class="column"><%= t("row_feelslike", scope: scope) %></div>
-    <div class="column"><%= feel[:current] %></div>
-    <div class="column"><%= feel[:max] %></div>
-    <div class="column"><%= feel[:min] %></div>
-  </div>
+  <% high_low_rows.each do |title, cols| %>
+    <div class="row">
+      <div class="column"><%= t(title, scope: scope) %></div>
+      <div class="column"><%= as_degrees(cols[:mean]) %></div>
+      <div class="column"><%= as_degrees(cols[:high]) %></div>
+      <div class="column"><%= as_degrees(cols[:low]) %></div>
+    </div>
+  <% end %>
 <% end %>

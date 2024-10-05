@@ -11,28 +11,58 @@ module VisualCrossing
   class Presenter
     attr_reader :weather_data
 
-    delegate :scope_view, :visible_current_conditions, :visible_current_conditions_list, to: :class
+    delegate :scope_view, :translate_current_conditions,
+             :translate_high_low_conditions, :translate_index, to: :class
 
     def self.scope_view(view = :index)
       [:views, :addresses, view]
     end
 
-    # Show page current conditions
-    # feelslike – what the temperature feels like accounting for heat index or wind chill.
-    #             Daily values are average values (mean) for the day.
-    # feelslikemax (day only) – maximum feels like temperature at the location.
-    # feelslikemin (day only) – minimum feels like temperature at the location.
-    # humidity – relative humidity in %
-    # precip – the amount of liquid precipitation that fell or is predicted to fall in the period.
-    #          This includes the liquid-equivalent amount of any frozen precipitation such as snow or ice.
-    # precipprob (forecast only) – the likelihood of measurable precipitation ranging from 0% to 100%
-    def self.xvisible_current_conditions
-      @visible_current_conditions ||= %w[temp feelslike humidity precip precipprob]
+    def self.translate_index
+      @translate_index ||= {
+        time_epoch: 'datetimeEpoch',
+        temp: 'temp',
+        feels_like: 'feelslike',
+        precip_probability: 'precipprob'
+      }
     end
 
-    # Index page current conditions
-    def self.visible_current_conditions_list
-      @visible_current_conditions_list ||= %w[temp feelslike precipprob]
+    # feelslike – what the temperature feels like accounting for heat index or wind chill.
+    #             Daily values are average values (mean) for the day.
+    # humidity – relative humidity in %
+    # precip – the amount of liquid precipitation in (inches or mm) that fell or is predicted to fall in the period.
+    #          This includes the liquid-equivalent amount of any frozen precipitation such as snow or ice.
+    # precipprob (forecast only) – the likelihood of measurable precipitation ranging from 0% to 100%
+    def self.translate_current_conditions
+      @translate_current_conditions ||= {
+        time_epoch: 'datetimeEpoch',
+        temp: 'temp',
+        feels_like: 'feelslike',
+        humidity: 'humidity',
+        precip_amount: 'precip',
+        precip_probability: 'precipprob'
+      }
+    end
+
+    # translate VisualCrossing fields into
+    #   high_low_conditions.html standard format data
+    # mean, high, and low for the day
+    def self.translate_high_low_conditions
+      @translate_high_low_conditions ||= {
+        temp: {
+          # temp – temperature at the location. Daily values are average values (mean) for the day.
+          # tempmax (day only) – maximum temperature at the location.
+          # tempmin (day only) – minimum temperature at the location.
+          mean: 'temp', high: 'tempmax', low: 'tempmin'
+        },
+        feels_like: {
+          # feelslike – what the temperature feels like accounting for heat index or wind chill.
+          #   Daily values are average values (mean) for the day.
+          # feelslikemax (day only) – maximum feels like temperature at the location.
+          # feelslikemin (day only) – minimum feels like temperature at the location.
+          mean: 'feelslike', high: 'feelslikemax', low: 'feelslikemin'
+        }
+      }
     end
 
     # callers:
@@ -41,7 +71,7 @@ module VisualCrossing
     # NOTE: Using body_hash so the cache does not
     #   refresh when showing all Addresses
     def self.on_index(address)
-      new(address.body_hash).ui_current_conditions_list
+      new(address.body_hash).ui_index
     end
 
     # callers:
@@ -67,13 +97,12 @@ module VisualCrossing
       ui_days.first[:hour_data] || []
     end
 
-    # callers:
-    #   app/views/addresses/_high_low_conditions.html.erb
-    #   app/views/addresses/show.html.erb
-    def ui_high_low_info
-      return {} if invalid_days?
+    def time_zone
+      @weather_data['timezone'] || 'Eastern Time (US & Canada)'
+    end
 
-      ui_days.first || {}
+    def current_conditions
+      @current_conditions ||= @weather_data['currentConditions']
     end
 
     # callers:
@@ -81,39 +110,55 @@ module VisualCrossing
     #  app/views/addresses/show.html.erb
     # ex:
     # [
-    #     [0] :ui_current_conditions,
-    #     [1] [
-    #         [0] "Temperature: 60.8",
-    #         [1] "Feels Like: 60.8",
-    #         [2] "Humidity: 77.4",
-    #         [3] "Precipitation: 0.0",
-    #         [4] "Precipitation Probability: 0.0"
-    #     ]
+    #   :ui_data,
+    #   {
+    #     :time_epoch => 1728129600,
+    #     :temp => 60.0,
+    #     :feels_like => 60.0,
+    #     :humidity => 75.07,
+    #     :precip_amount => 0.0,
+    #     :precip_probability => 0.0
+    # }
     # ]
-    def xui_current_conditions
-      @ui_current_conditions ||= format_view_attrs(visible_current_conditions)
+    def ui_current_conditions
+      ui_data = {}
+      translate_current_conditions.each do |key, field|
+        ui_data[key] = current_conditions[field]
+      end
+      ui_data
+    end
+
+    # convert VisualCrossing's first day_info data into
+    #   today's high_low_conditions.html rows data
+    # NOTE: just the data values, no formatting
+    #
+    # callers:
+    #   AddressesController#show
+    #   app/views/addresses/_high_low_conditions.html.erb
+    def ui_high_low_conditions
+      day_info = days&.first || {}
+
+      ui_data = {}
+      translate_high_low_conditions.each do |row_key, column_data|
+        columns = {}
+        column_data.each do |col, field|
+          # view => mean, high, and low
+          columns[col] = day_info[field]
+        end
+        ui_data[row_key] = columns
+      end
+      ui_data
     end
 
     # callers:
+    #   AddressesController#index
     #   app/views/addresses/index.html.erb
-    # example:
-    #   :ui_current_conditions_list
-    #     [
-    #         [0] "44.5",
-    #         [1] "37.6",
-    #         [2] "52.7"
-    #     ]
-    def ui_current_conditions_list
-      @ui_current_conditions_list ||= format_view_attrs(visible_current_conditions_list,
-                                                        scope: scope_view(:index))
-    end
-
-    def time_zone
-      @weather_data['timezone'] || 'Eastern Time (US & Canada)'
-    end
-
-    def current_conditions
-      @current_conditions ||= @weather_data['currentConditions']
+    def ui_index
+      ui_data = {}
+      translate_index.each do |key, field|
+        ui_data[key] = current_conditions[field]
+      end
+      ui_data
     end
 
     private
@@ -127,19 +172,6 @@ module VisualCrossing
         in_degrees(element)
       else
         element
-      end
-    end
-
-    def format_view_attrs(list, scope: nil)
-      list.map do |attr|
-        if valid?
-          translate = scope ? I18n.t(attr, scope: scope) : Address.human_attribute_name(attr)
-          value = current_conditions[attr] || 0.0
-          element = translate.gsub('{%}', '%%') % value
-          with_degree(element, attr)
-        else
-          'n/a'
-        end
       end
     end
 
@@ -167,8 +199,6 @@ module VisualCrossing
       days.map do |day_info|
         {
           date: valid(day_info['datetime']),
-          temp: ui_high_low_temp(day_info),
-          feels_like: ui_high_low_feels_like(day_info),
           hour_data: ui_hour_data(day_info)
         }
       end
@@ -178,22 +208,6 @@ module VisualCrossing
       ui_days.blank?
     end
 
-    def ui_high_low_temp(day_info)
-      {
-        max: valid(in_degrees(day_info['tempmax'])),
-        current: valid(in_degrees(day_info['temp'])),
-        min: valid(in_degrees(day_info['tempmin']))
-      }
-    end
-
-    def ui_high_low_feels_like(day_info)
-      {
-        max: valid(in_degrees(day_info['feelslikemax'])),
-        current: valid(in_degrees(day_info['feelslike'])),
-        min: valid(in_degrees(day_info['feelslikemin']))
-      }
-    end
-
     def ui_hour_data(day_info)
       day_info['hours'].map do |hour_info|
         { date: hour_info['datetime'],
@@ -201,6 +215,24 @@ module VisualCrossing
           precipprob: hour_info['precipprob'],
           conditions: hour_info['conditions'] }
       end
+    end
+
+    # Moonphase
+    # A decimal value representing the current moon phase
+    #   between 0 and 1 where 0 represents the new moon,
+    #   0.5 represents the full moon.
+    #   The full cycle can be represented as:
+    #
+    # 0 – new moon
+    # 0-0.25 – waxing crescent
+    # 0.25 – first quarter
+    # 0.25-0.5 – waxing gibbous
+    # 0.5 – full moon
+    # 0.5-0.75 – waning gibbous
+    # 0.75 – last quarter
+    # 0.75 -1 – waning crescent
+    def moonphase
+      'implmement'
     end
   end
 end

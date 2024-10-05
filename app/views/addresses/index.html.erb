@@ -17,12 +17,12 @@
   <tbody>
     <% @addresses.each do |address| %>
       <tr>
-        <% current_conditions = VisualCrossing::Presenter.on_index(address) %>
+        <% info = VisualCrossing::Presenter.on_index(address) %>
         <td><%= address.resolved_as %></td>
         <td><%= last_updated_at(address) %></td>
-        <td><%= current_conditions[0] %></td>
-        <td><%= current_conditions[1] %></td>
-        <td><%= current_conditions[2] %>%</td>
+        <td><%= as_degrees(info[:temp]) %></td>
+        <td><%= as_degrees(info[:feels_like]) %></td>
+        <td><%= info[:precip_probability]%>%</td>
         <td><%= link_to 'Show', address %></td>
         <td><%= link_to 'Edit', edit_address_path(address) %></td>
         <td><%= button_to 'Destroy', address, method: :delete, data: { confirm: 'Are you sure?' } %></td>
