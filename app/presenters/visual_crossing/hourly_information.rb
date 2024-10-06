@@ -6,11 +6,11 @@ module VisualCrossing
   class HourlyInformation
     attr_reader :list
 
-    delegate :view_map, to: :class
+    delegate :view_translate, to: :class
 
     # app/views/addresses/_hourly_information.html.erb
-    def self.view_map
-      @view_map ||= {
+    def self.view_translate
+      @view_translate ||= {
         hour: 'datetime',
         temp: 'temp',
         conditions: 'conditions',
@@ -32,6 +32,21 @@ module VisualCrossing
     #
     # Translate the VisualCrossing hour array
     #   into rows of column information
+    # ex:
+    #   [
+    #     {
+    #                      :hour => "00:00:00",
+    #                     :temp => 67.1,
+    #               :conditions => "Clear",
+    #       :precip_probability => 0.0
+    #     },
+    #     {
+    #                      :hour => "01:00:00",
+    #                     :temp => 64.3,
+    #               :conditions => "Clear",
+    #       :precip_probability => 0.0
+    #     }
+    #   ]
     def translate
       return [] if list.blank?
 
@@ -43,9 +58,17 @@ module VisualCrossing
     private
 
     # column information for the hour_info data
+    # ex:
+    #   :columns,
+    #   {
+    #                   :hour => "00:00:00",
+    #                   :temp => 67.1,
+    #             :conditions => "Clear",
+    #     :precip_probability => 0.0
+    #   }
     def columns(hour_info)
       columns = {}
-      view_map.each do |view_key, field|
+      view_translate.each do |view_key, field|
         columns[view_key] = hour_info[field]
       end
       columns

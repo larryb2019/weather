@@ -7,13 +7,13 @@ module VisualCrossing
   class HighLowConditions
     attr_reader :hash
 
-    delegate :view_map, to: :class
+    delegate :view_translate, to: :class
 
     # translate VisualCrossing fields into
     #   high_low_conditions.html standard format data
     # mean, high, and low for the day
-    def self.view_map
-      @view_map ||= {
+    def self.view_translate
+      @view_translate ||= {
         temp: {
           # temp – temperature at the location. Daily values are average values (mean) for the day.
           # tempmax (day only) – maximum temperature at the location.
@@ -40,19 +40,25 @@ module VisualCrossing
       @hash = day_information_hash
     end
 
+    # ex:
+    #   :view_hash,
+    #   {
+    #           :temp => { :mean => 67.3, :high => 81.9, :low => 54.0 },
+    #     :feels_like => { :mean => 67.1, :high => 80.2, :low => 54.0 }
+    #   }
     def translate
       return {} if hash.blank?
 
-      ui_data = {}
-      view_map.each do |row_key, column_data|
+      view_hash = {}
+      view_translate.each do |row_key, column_data|
         columns = {}
         column_data.each do |col, field|
           # view => mean, high, and low
           columns[col] = hash[field]
         end
-        ui_data[row_key] = columns
+        view_hash[row_key] = columns
       end
-      ui_data
+      view_hash
     end
   end
 end
