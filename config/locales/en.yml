@@ -32,6 +32,8 @@
 en:
   hello: "Hello world"
   degrees_html: "%{temp}&deg;"
+  precip_probability: "%.0f"
+
   views:
     addresses:
       index:
@@ -56,9 +58,9 @@ en:
         feels_like: Feels Like
       hourly_information:
         title_html: <strong>Hourly Information</strong>
-        col_time: Time
+        col_hour: Time
         col_temp: Temperature
-        col_precipprob: Precip Probablity
+        precip_probability: Precip Probablity
         col_conditions: Conditions
   activerecord:
     models:

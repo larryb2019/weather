@@ -7,6 +7,6 @@
   <li><%= as_html(:temp, format_degrees(info[:temp])) %></li>
   <li><%= as_html(:feels_like, format_degrees(info[:feels_like])) %></li>
   <li><%= with_format(:humidity, info[:humidity]) %></li>
-  <li><%= with_format(:precip_amount, info[:precip_amount]) %></li>
+  <li><%= with_format(:precip_amount, info[:precip_amount].to_f) %></li>
   <li><%= with_format(:precip_probability, info[:precip_probability]) %></li>
 </ul>

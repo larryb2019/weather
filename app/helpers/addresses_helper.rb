@@ -16,11 +16,10 @@ module AddressesHelper
     Time.find_zone(@zone).parse(hour).strftime("%l:%M %P")
   end
 
-  def as_time_in_zone(key)
+  def xas_time_in_zone(key)
     label = Address.human_attribute_name(key)
     "#{label} #{ui_in_zone_epoch(@current_conditions[key])}"
   end
-
 
   def format_degrees(value)
     "%.1f" % value
@@ -28,6 +27,10 @@ module AddressesHelper
 
   def as_degrees(value)
     t("degrees_html", temp: format_degrees(value))
+  end
+
+  def as_precip_probability(value)
+    "%.0f %%" % value
   end
 
   def as_temp(key)

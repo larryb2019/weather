@@ -1,17 +1,17 @@
-<% hourly_info = presenter.ui_hourly_info %>
+<% hourly_rows = presenter.ui_hourly_information %>
 <% scope = [:views, :addresses, :hourly_information] %>
-<% if hourly_info.present? %>
+<% if hourly_rows.present? %>
   <p> <%= t("title_html", scope: scope) %> </p>
   <div class="row">
-    <div class="column"><%= t("col_time", scope: scope) %></div>
+    <div class="column"><%= t("col_hour", scope: scope) %></div>
     <div class="column"><%= t("col_temp", scope: scope) %></div>
-    <div class="column"><%= t("col_precipprob", scope: scope) %></div>
+    <div class="column"><%= t("col_precip_probability", scope: scope) %></div>
     <div class="column"><%= t("col_conditions", scope: scope) %></div>
-    <% hourly_info.each do |info| %>
-      <div class="column"><%= ui_in_zone_hour_short(info[:date]) %></div>
-      <div class="column"><%= info[:temp] %></div>
-      <div class="column"><%= "%.0f %%" % info[:precipprob] %></div>
-      <div class="column"><%= info[:conditions] %></div>
+    <% hourly_rows.each do |cols| %>
+      <div class="column"><%= ui_in_zone_hour_short(cols[:hour]) %></div>
+      <div class="column"><%= as_degrees(cols[:temp]) %></div>
+      <div class="column"><%= as_precip_probability(cols[:precip_probability]) %></div>
+      <div class="column"><%= cols[:conditions] %></div>
     <% end %>
   </div>
 <% end %>
