@@ -26,6 +26,10 @@ module VisualCrossing
       @json_data = json_data
     end
 
+    def read
+      @json_data = path_location.read
+    end
+
     # Only write the test/fixtures file
     #   if in development and file does not currently exist
     def write_or_not
